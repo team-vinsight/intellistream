@@ -1,0 +1,71 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Adaptive YOLO — application configuration
+# Edit this file to tune behaviour without touching source code.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── YOLO model paths and tier ordering ───────────────────────────────────────
+model:
+  nano:   models/yolo/yolo26n.pt
+  small:  models/yolo/yolo26s.pt
+  medium: models/yolo/yolo26m.pt
+  # Tier order: index 0 = lightest, index 2 = heaviest
+  tiers:  [n, s, m]
+
+# ── Object-class filtering ────────────────────────────────────────────────────
+# List COCO class names to detect.  Leave empty ([]) to detect all classes.
+# Detected objects in these classes will be masked with a solid black rectangle.
+#
+# Common COCO classes:
+#   person, bicycle, car, motorcycle, airplane, bus, train, truck, boat,
+#   traffic light, fire hydrant, stop sign, parking meter, bench, bird,
+#   cat, dog, horse, sheep, cow, elephant, bear, zebra, giraffe, backpack,
+#   umbrella, handbag, tie, suitcase, frisbee, skis, snowboard, sports ball,
+#   kite, baseball bat, baseball glove, skateboard, surfboard, tennis racket,
+#   bottle, wine glass, cup, fork, knife, spoon, bowl, banana, apple,
+#   sandwich, orange, broccoli, carrot, hot dog, pizza, donut, cake, chair,
+#   couch, potted plant, bed, dining table, toilet, tv, laptop, mouse,
+#   remote, keyboard, cell phone, microwave, oven, toaster, sink,
+#   refrigerator, book, clock, vase, scissors, teddy bear, hair drier,
+#   toothbrush
+detection:
+  classes: [person, car, truck, bus, motorcycle]
+  confidence_threshold: 0.25
+
+# ── Adaptive model selector (MLP hyper-parameters) ───────────────────────────
+selector:
+  input_dim:         14
+  hidden_dim:        32
+  output_dim:        3
+  learning_rate:     0.01
+  momentum:          0.9
+  min_samples:       30
+  replay_size:       400
+  batch_size:        24
+  update_interval:   5
+  max_perf_weight:   0.70
+  perf_ramp_samples: 300
+  # Rule-based thresholds used during warm-up and as fallback
+  upgrade_fps:       22.0
+  downgrade_fps:     10.0
+  cpu_heavy:         75.0
+  ram_heavy:         85.0
+  # PyTorch checkpoint path (relative to project root)
+  weights_path:      adaptive_selector_weights.pt
+
+# ── Hysteresis guard (prevents rapid tier switching) ─────────────────────────
+hysteresis:
+  min_hold_frames: 60     # minimum frames between switches
+  min_hold_time:   2.0    # minimum seconds between switches
+  min_switch_conf: 0.55   # MLP must reach this confidence to trigger a switch
+
+# ── Camera capture ────────────────────────────────────────────────────────────
+camera:
+  width:          1280
+  height:         720
+  max_bad_frames: 30      # consecutive bad frames before giving up
+
+# ── Metrics collection ────────────────────────────────────────────────────────
+metrics:
+  enabled:     true
+  save_path:   reports/metrics.csv
+  reports_dir: reports
