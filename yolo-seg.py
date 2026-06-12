@@ -8,11 +8,6 @@ models = {
     "s": YOLO("models/yolo-seg/yolo26s-seg.pt"),
     "m": YOLO("models/yolo-seg/yolo26m-seg.pt"),
 }
-# models = {
-#     "n": YOLO("models/yolo-seg/yolo26n-seg.engine"),
-#     "s": YOLO("models/yolo-seg/yolo26s-seg.engine"),
-#     "m": YOLO("models/yolo-seg/yolo26m-seg.engine"),
-# }
 
 model_levels = ["n", "s", "m"]
 
