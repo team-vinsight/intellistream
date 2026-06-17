@@ -1,3 +1,4 @@
 *.onnx
 *.engine
 .venv/
+__pycache__/
